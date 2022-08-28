@@ -10,7 +10,7 @@ import serial
 STREAM_FILE=("COM16","serial")
 #STREAM_FILE=("log.bin","file")
 
-header = { "head": b"head", "id": 0, "N": 512, "fs": 44100,"tail":b"tail" }
+header = { "head": b"head", "id": 0, "N": 128, "fs": 4000,"tail":b"tail" }
 fig    = plt.figure ( 1 )
 
 adcAxe = fig.add_subplot ( 2,1,1                  )
@@ -72,7 +72,7 @@ stop=False
 
 def update(t):
     global header,stop
-#    flushStream ( streamFile,header )
+    flushStream ( streamFile,header )
     if stop:
         input()
         stop=False
@@ -87,7 +87,7 @@ def update(t):
     adcLn.set_data  ( timeN[0:N]/fs ,adc   )
 
     corrLn.set_data ( timeN ,ciaaCorr[:2*N-1])
-    corrAxe.set_ylim ( 0 ,1.65)
+    corrAxe.set_ylim ( -350.0,350)
     corrAxe.set_xlim ( 0 ,2*N-1)
     THR=1.0
     thresholdLn.set_data(timeN,np.ones(2*N-1)*THR)
@@ -106,8 +106,10 @@ if(STREAM_FILE[1]=="serial"):
 else:
     streamFile=open(STREAM_FILE[0],"rb",0)
 
-ani=FuncAnimation(fig,update,10000,init_func=None,blit=True,interval=10,repeat=True)
-plt.draw()
-plt.get_current_fig_manager().window.showMaximized() #para QT5
-plt.show()
-streamFile.close()
+
+if __name__ == '__main__':
+    ani=FuncAnimation(fig,update,10000,init_func=None,blit=True,interval=10,repeat=True)
+    plt.draw()
+    plt.get_current_fig_manager().window.showMaximized() #para QT5
+    plt.show()
+    streamFile.close()

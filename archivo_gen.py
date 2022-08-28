@@ -5,25 +5,32 @@ import wave
 import sys
 np.set_printoptions(threshold=sys.maxsize)
 
-data = wave.open("hola.wav","rb")
+# data = wave.open("hola.wav","rb")
+data = wave.open("hola_reducido.wav","rb")
+
+
+muestras = 128
 
 sample_freq = data.getframerate()
 print(sample_freq)
 n_samples = data.getnframes()
 print(n_samples)
-signal = data.readframes(-1)
+signal = data.readframes(muestras)
+# signal = data.readframes(-1)
 
 data.close()
 
-t_audio = n_samples/sample_freq
+# t_audio = n_samples/sample_freq
+t_audio = muestras/4000#sample_freq
 
 print(t_audio)
 
 signal_array = np.frombuffer(signal,dtype=np.int16)
 print(signal_array[:])
-signal_array.tofile('hello.csv', sep=',')
+signal_array.tofile('hello_data.csv', sep=',')
 
-times = np.linspace(0,t_audio,num=n_samples)
+times = np.linspace(0,t_audio,muestras)
+# times = np.linspace(0,t_audio,n_samples)
 
 fs   = 44100
 sec  = 1
@@ -44,10 +51,10 @@ for i in range(L,L+L):
 # plt.plot(t,note)
 # plt.show()
 
-plt.figure(figsize=(15,5))
-plt.plot(times,signal_array)
-plt.title("Audio signal")
-plt.ylabel("Signal wave")
-plt.xlabel("Time (s)")
-plt.xlim(0,t_audio)
-plt.show()
+# plt.figure(figsize=(15,5))
+# plt.plot(times,signal_array)
+# plt.title("Audio signal")
+# plt.ylabel("Signal wave")
+# plt.xlabel("Time (s)")
+# plt.xlim(0,t_audio)
+# plt.show()
