@@ -10,7 +10,7 @@ import serial
 STREAM_FILE=("COM16","serial")
 #STREAM_FILE=("log.bin","file")
 
-header = { "head": b"head", "id": 0, "N": 128, "fs": 4000,"tail":b"tail" }
+header = { "head": b"head", "id": 0, "N": 252, "fs": 44100,"tail":b"tail" }
 fig    = plt.figure ( 1 )
 
 adcAxe = fig.add_subplot ( 2,1,1                  )
@@ -87,17 +87,16 @@ def update(t):
     adcLn.set_data  ( timeN[0:N]/fs ,adc   )
 
     corrLn.set_data ( timeN ,ciaaCorr[:2*N-1])
-    corrAxe.set_ylim ( -350.0,350)
+    corrAxe.set_ylim ( 0,100)
     corrAxe.set_xlim ( 0 ,2*N-1)
-    THR=1.0
+    THR=45.0
     thresholdLn.set_data(timeN,np.ones(2*N-1)*THR)
 
     m=max(ciaaCorr[:N-1])
-    if m>THR and m<10:
+    # if m>THR and m<55:
+    if m>THR and  m<55:
         print("find",m,np.where(m==ciaaCorr)[0])
         stop=True
-
-
     return adcLn, corrLn,   thresholdLn,
 
 #seleccionar si usar la biblioteca pyserial o leer desde un archivo log.bin
@@ -108,8 +107,10 @@ else:
 
 
 if __name__ == '__main__':
-    ani=FuncAnimation(fig,update,10000,init_func=None,blit=True,interval=10,repeat=True)
+    ani = None
+
+    ani=FuncAnimation(fig,update,100000,init_func=None,blit=True,interval=10,repeat=True)
     plt.draw()
-    plt.get_current_fig_manager().window.showMaximized() #para QT5
+    #plt.get_current_fig_manager().window.showMaximized() #para QT5
     plt.show()
     streamFile.close()

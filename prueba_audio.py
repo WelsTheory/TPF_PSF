@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import wave
+import pyaudio
 
 data = wave.open("hola.wav","rb")
 
@@ -25,6 +26,29 @@ plt.ylabel("Signal wave")
 plt.xlabel("Time (s)")
 plt.xlim(0,t_audio)
 plt.show()
+
+filename = 'hola.wav'
+  
+chunk = 1024  
+  
+af = wave.open(filename, 'rb') 
+  
+pa = pyaudio.PyAudio() 
+  
+stream = pa.open(format = pa.get_format_from_width(af.getsampwidth()), 
+                channels = af.getnchannels(), 
+                rate = af.getframerate(), 
+                output = True) 
+  
+rd_data = af.readframes(chunk) 
+  
+while rd_data != '': 
+    stream.write(rd_data) 
+    rd_data = af.readframes(chunk) 
+  
+stream.stop_stream() 
+stream.close() 
+pa.terminate()
 
 # import matplotlib.pyplot as plt
 # from scipy import signal
